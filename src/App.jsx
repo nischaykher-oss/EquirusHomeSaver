@@ -277,7 +277,7 @@ export default function App() {
           <div className="mt-6 p-4 bg-purple-50 rounded">
             <div className="text-lg text-purple-700">
               {isFinite(results.yearsNew) && isFinite(results.netSavings)
-                ? `With Money Saver, your loan will get completed in ${(+results.yearsNew).toFixed(2)} yrs saving ₹ ${formatIndian(results.netSavings)} in interest`
+               ? `With Home Saver, your loan will get completed in ${(+results.yearsNew).toFixed(2)} yrs saving ₹ ${formatIndian(results.netSavings)} in interest`
                 : 'Click "Calculate savings" to see how much you can save.'}
             </div>
           </div>
