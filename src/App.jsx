@@ -161,7 +161,7 @@ export default function App() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-6">EquirusHomeSaver Calculator</h1>
+      <h1 className="text-2xl font-semibold mb-6">EquirusMoneySaver Calculator</h1>
 
       <div className="grid grid-cols-12 gap-4">
         {/* Inputs */}
@@ -277,7 +277,7 @@ export default function App() {
           <div className="mt-6 p-4 bg-purple-50 rounded">
             <div className="text-lg text-purple-700">
               {isFinite(results.yearsNew) && isFinite(results.netSavings)
-               ? `With Home Saver, your loan will get completed in ${(+results.yearsNew).toFixed(2)} yrs saving ₹ ${formatIndian(results.netSavings)} in interest`
+              ? `With Money Saver, your loan will get completed in ${(+results.yearsNew).toFixed(2)} yrs saving ₹ ${formatIndian(results.netSavings)} in interest`
                 : 'Click "Calculate savings" to see how much you can save.'}
             </div>
           </div>
