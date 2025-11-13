@@ -54,19 +54,40 @@ function unformatNumberStringToNumber(s) {
 */
 function NumberInput({ value, onRawChange, placeholder, inputMode = "numeric", onEnter, name }) {
   const ref = useRef(null);
+function handleChange(e) {
+  const displayValue = e.target.value;
 
-  function handleChange(e) {
-    // raw typed value (may contain commas if user pastes)
-    const displayValue = e.target.value;
-    // allow digits, comma, dot, minus while typing; then sanitize
-    const cleaned = displayValue.replace(/[^0-9\.\-]/g, "");
-    // only allow at most one dot
+  let cleaned = displayValue.replace(/[^0-9\.\-]/g, "");
+
+  let raw;
+
+  if (inputMode === "decimal") {
+    // allow at most one decimal point
     const parts = cleaned.split(".");
-    let raw;
-    if (parts.length <= 1) raw = cleaned;
-    else raw = parts.shift() + "." + parts.join("");
-    // keep leading minus if present (though we don't expect)
-    if (cleaned.startsWith("-") && !raw.startsWith("-")) raw = "-" + raw;
+    if (parts.length > 2) {
+      cleaned = parts.shift() + "." + parts.join("");
+    }
+    raw = cleaned;
+  } else {
+    // numeric mode: remove dots entirely
+    cleaned = cleaned.replace(/\./g, "");
+    raw = cleaned;
+  }
+
+  const formatted =
+    inputMode === "decimal"
+      ? raw // no commas for decimal fields
+      : formatIndianNumberStringForDisplay(raw);
+
+  onRawChange(formatted);
+
+  setTimeout(() => {
+    if (ref.current) {
+      const len = ref.current.value.length;
+      ref.current.setSelectionRange(len, len);
+    }
+  }, 0);
+}
 
     // format for display and update parent with raw (no commas)
     const formatted = formatIndianNumberStringForDisplay(raw);
@@ -95,12 +116,23 @@ function NumberInput({ value, onRawChange, placeholder, inputMode = "numeric", o
     }, 0);
   }
 
-  function handleBlur(e) {
-    // format again on blur
-    const raw = unformatDisplayToRaw(e.target.value);
-    const formatted = raw === "" ? "" : formatIndianNumberStringForDisplay(raw);
+ function handleBlur(e) {
+  const raw = unformatDisplayToRaw(e.target.value);
+
+  if (raw === "") {
+    onRawChange("");
+    return;
+  }
+
+  if (inputMode === "decimal") {
+    // ROI & Tenure keep decimals; no comma formatting
+    onRawChange(raw);
+  } else {
+    // Loan & Offset get Indian commas
+    const formatted = formatIndianNumberStringForDisplay(raw);
     onRawChange(formatted);
   }
+}
 
   function handleKeyDown(e) {
     if (e.key === "Enter" || e.key === "Go") {
